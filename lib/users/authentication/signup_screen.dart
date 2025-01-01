@@ -1,6 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:loca_app/api_connection/api_connection.dart';
 import 'package:loca_app/users/authentication/login_screen.dart';
+import 'package:http/http.dart' as http;
 
 class SignUpScreen extends StatefulWidget
 {
@@ -17,6 +22,43 @@ class _SignUpScreenState extends State<SignUpScreen>
   var emailController = TextEditingController();
   var passwordController = TextEditingController();
   var isObsecure = true.obs;
+
+  validateUserEmail() async
+  {
+    try
+    {
+      var res = await http.post(
+        Uri.parse(API.validateEmail),
+        body: {
+          'user_email': emailController.text.trim(),
+        },
+      );
+
+      if(res.statusCode == 200)
+        {
+          var resBodyOfValidateEmail = jsonDecode(res.body);
+
+          if(resBodyOfValidateEmail['emailFound'] == true)
+            {
+              Fluttertoast.showToast(msg: "Email đã có người khác sử dụng. Hãy thử email khác.");
+            }
+          else
+            {
+              //register & save new user record to database
+              registerAndSaveUserRecord();
+            }
+        }
+    }
+    catch(e)
+    {
+
+    }
+  }
+
+  registerAndSaveUserRecord() async
+  {
+
+  }
 
   @override
   Widget build(BuildContext context)
@@ -235,7 +277,11 @@ class _SignUpScreenState extends State<SignUpScreen>
                                     child: InkWell(
                                       onTap: ()
                                       {
-
+                                        if(formKey.currentState!.validate())
+                                        {
+                                          //validate the email
+                                          validateUserEmail();
+                                        }
                                       },
                                       borderRadius: BorderRadius.circular(30),
                                       child: const Padding(
