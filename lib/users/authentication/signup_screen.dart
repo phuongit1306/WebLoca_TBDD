@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:loca_app/api_connection/api_connection.dart';
 import 'package:loca_app/users/authentication/login_screen.dart';
 import 'package:http/http.dart' as http;
+import 'package:loca_app/users/model/user.dart';
 
 class SignUpScreen extends StatefulWidget
 {
@@ -51,13 +52,45 @@ class _SignUpScreenState extends State<SignUpScreen>
     }
     catch(e)
     {
-
+      print(e.toString());
+      Fluttertoast.showToast(msg: e.toString());
     }
   }
 
   registerAndSaveUserRecord() async
   {
+    User userModel = User(
+      1,
+      nameController.text.trim(),
+      emailController.text.trim(),
+      passwordController.text.trim(),
+    );
 
+    try
+    {
+      var res = await http.post(
+        Uri.parse(API.signUp),
+        body: userModel.toJson(),
+      );
+
+      if(res.statusCode == 200)
+        {
+          var resBodyOfSignUp = jsonDecode(res.body);
+          if(resBodyOfSignUp['success'])
+            {
+              Fluttertoast.showToast(msg: "Chúc mừng, bạn đã Đăng ký thành công.");
+            }
+          else
+            {
+              Fluttertoast.showToast(msg: "Có lỗi xảy ra, hãy thử lại.");
+            }
+        }
+    }
+    catch(e)
+    {
+      print(e.toString());
+      Fluttertoast.showToast(msg: e.toString());
+    }
   }
 
   @override
