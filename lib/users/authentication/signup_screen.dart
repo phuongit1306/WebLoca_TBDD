@@ -76,7 +76,7 @@ class _SignUpScreenState extends State<SignUpScreen>
       if(res.statusCode == 200)
         {
           var resBodyOfSignUp = jsonDecode(res.body);
-          if(resBodyOfSignUp['success'])
+          if(resBodyOfSignUp['success'] == true)
             {
               Fluttertoast.showToast(msg: "Chúc mừng, bạn đã Đăng ký thành công.");
             }
