@@ -1,6 +1,15 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:loca_app/users/authentication/signup_screen.dart';
+import 'package:http/http.dart' as http;
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:loca_app/users/fragments/dashboard_of_fragments.dart';
+import 'package:loca_app/users/model/user.dart';
+import 'package:loca_app/api_connection/api_connection.dart';
+import 'package:loca_app/users/userPreferences/user_preferences.dart';
+
 
 class LoginScreen extends StatefulWidget
 {
@@ -16,6 +25,47 @@ class _LoginScreenState extends State<LoginScreen>
   var emailController = TextEditingController();
   var passwordController = TextEditingController();
   var isObsecure = true.obs;
+
+  loginUserNow() async
+  {
+    try
+    {
+      var res = await http.post(
+        Uri.parse(API.login),
+        body: {
+          "user_email": emailController.text.trim(),
+          "user_password": passwordController.text.trim(),
+        },
+      );
+
+      if(res.statusCode == 200)
+      {
+        var resBodyOfLogin = jsonDecode(res.body);
+        if(resBodyOfLogin['success'] == true)
+        {
+          Fluttertoast.showToast(msg: "Bạn đã Đăng nhập thành công.");
+
+          User userInfo = User.fromJson(resBodyOfLogin["userData"]);
+
+          //save userInfo to local Storage using Shared Preferences
+          await RememberUserPrefs.saveRememberUser(userInfo);
+
+          Future.delayed(Duration(milliseconds: 2000), ()
+          {
+            Get.to(DashboardOfFragments());
+          });
+        }
+        else
+        {
+          Fluttertoast.showToast(msg: "Không chính xác.\nVui lòng nhập đúng email hoặc mật khẩu và thử lại.");
+        }
+      }
+    }
+    catch(errorMsg)
+    {
+      print("Lỗi :: " + errorMsg.toString());
+    }
+  }
 
   @override
   Widget build(BuildContext context)
@@ -189,7 +239,10 @@ class _LoginScreenState extends State<LoginScreen>
                                       child: InkWell(
                                         onTap: ()
                                         {
-
+                                          if(formKey.currentState!.validate())
+                                            {
+                                              loginUserNow();
+                                            }
                                         },
                                         borderRadius: BorderRadius.circular(30),
                                         child: const Padding(
