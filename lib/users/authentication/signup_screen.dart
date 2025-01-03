@@ -79,6 +79,12 @@ class _SignUpScreenState extends State<SignUpScreen>
           if(resBodyOfSignUp['success'] == true)
             {
               Fluttertoast.showToast(msg: "Chúc mừng, bạn đã Đăng ký thành công.");
+
+              setState(() {
+                nameController.clear();
+                emailController.clear();
+                passwordController.clear();
+              });
             }
           else
             {
