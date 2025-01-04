@@ -63,7 +63,7 @@ class _LoginScreenState extends State<LoginScreen>
     }
     catch(errorMsg)
     {
-      print("Lỗi :: " + errorMsg.toString());
+      print("Error :: " + errorMsg.toString());
     }
   }
 

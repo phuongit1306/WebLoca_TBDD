@@ -1,18 +1,15 @@
 import 'package:flutter/material.dart';
 
-class DashboardOfFragments extends StatefulWidget {
+class DashboardOfFragments extends StatelessWidget
+{
 
-  @override
-  State<DashboardOfFragments> createState() => _DashboardOfFragmentsState();
-}
 
-class _DashboardOfFragmentsState extends State<DashboardOfFragments> {
   @override
   Widget build(BuildContext context)
   {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Dashboard"),
+        title: Text("Trang Chủ"),
       ),
     );
   }
