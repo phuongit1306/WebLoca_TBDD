@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:loca_app/users/authentication/login_screen.dart';
+import 'package:loca_app/users/fragments/dashboard_of_fragments.dart';
+import 'package:loca_app/users/userPreferences/user_preferences.dart';
 
 void main()
 {
@@ -24,7 +26,19 @@ class MyApp extends StatelessWidget {
          */
         primarySwatch: Colors.purple,
       ),
-      home: FutureBuilder(future: null, builder: (context, dataSnapshot) { return LoginScreen(); }
+      home: FutureBuilder(
+          future: RememberUserPrefs.readUserInfo(),
+          builder: (context, dataSnapshot)
+          {
+            if(dataSnapshot.data == null)
+              {
+                return LoginScreen();
+              }
+            else
+              {
+                return DashboardOfFragments();
+              }
+          }
       ),
     );
   }
